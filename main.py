@@ -2,7 +2,7 @@ import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
+### This is a test comment by Alexis
 df = pd.read_csv("mortality_climate.csv")
 
 df['season'] = df['season'].astype('category') # pour changer en categorical variable
