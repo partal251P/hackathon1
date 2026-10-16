@@ -6,6 +6,7 @@ from scipy.stats import poisson, nbinom
 import statsmodels.api as sm 
 import statsmodels.formula.api as smf 
 
+df = pd.read_csv("mortality_climate.csv")
 
 # Load DataSet 
 mortality_df = pd.read_csv("mortality_climate.csv")
