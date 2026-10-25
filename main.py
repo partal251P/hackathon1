@@ -1,3 +1,5 @@
+import math
+
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,6 +28,22 @@ sub25_summer_over_85 = sub25[(sub25["CD_AGEGROUP"] == "85+") & (sub25["season"] 
 
 # Find t-value = signal/noise = abs(mean(sub22...) - mean(sub25...))/sqrt(V[sub22...]/n1 + V[sub25...]/n2)
 # (if unclear, go seek medical attention immediately)
+
+var_sub22 = sub22_summer_over_85["MS_NUM_DEATH"].std()
+var_sub25 = sub25_summer_over_85["MS_NUM_DEATH"].std()
+
+mean_sub22 = sub22_summer_over_85["MS_NUM_DEATH"].mean()
+mean_sub25 = sub25_summer_over_85["MS_NUM_DEATH"].mean() 
+
+n1 = sub22_summer_over_85["MS_NUM_DEATH"].count()
+n2 = sub25_summer_over_85["MS_NUM_DEATH"].count()
+
+t_value = abs(mean_sub22 - mean_sub25) / math.sqrt((math.pow(var_sub22, 2)) / n1 + (math.pow(var_sub25, 2)) / n2)
+
+
+
+# Assumptions for this test are : normal distribution, similar variance, same number of data points and 20-30+ samples
+
 
 # 4.3) Explain what the Wilcoxon test is. Why could it be relevant in our setting?
 
