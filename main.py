@@ -3,16 +3,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-df = pd.read_csv("mortality_climate.csv")
+df = pd.read_csv("electricity_climate.csv")
 
-df['season'] = df['season'].astype('category') # pour changer en categorical variable
-df['CD_AGEGROUP'] = df['CD_AGEGROUP'].astype('category')
+# Datetime est de type object (texte) -> conversion en vraie date
+df["Datetime"] = pd.to_datetime(df["Datetime"], utc=True)
+# On enlève les doublons et on met datetime comme index
+df = df.sort_values("Datetime").drop_duplicates(subset="Datetime").set_index("Datetime")
 
-ordre = ["0-24", "25-44", "45-64", "65-74", "75-84", "85+"]
 
-counts = df["CD_AGEGROUP"].value_counts().reindex(ordre)
-df.info() 
+lag = pd.Timedelta(days=7)
 
-plt.bar(counts, df["MS_NUM_DEATH"])
-plt.show()
-
+# Valeurs passées, poussées de 7 jours vers le futur pour s'aligner sur t
+past = df[["Consumption", "temp_avg", "temp_avg_sq"]].copy()
+past.index = past.index + lag # On change juste la date pour 7 après mais pas les données
+past.columns = ["Cons_lag7", "T_lag7", "T_lag7_sq"] 
