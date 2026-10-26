@@ -3,7 +3,7 @@ import math
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.stats import t # For student t table
+from scipy.stats import t, wilcoxon # t is for student t table
 
 
 df = pd.read_csv("mortality_climate.csv")
@@ -60,8 +60,26 @@ print(f"t_value is {t_value}, student table is {t_compare}. t_value > t_compare,
 
     # 4.3) Explain what the Wilcoxon test is. Why could it be relevant in our setting?
 
+# Similar to t_test BUT data does not have to be normally distributed (non parametric). It assumes a certain symmetry of values
+# around the median. It's useful especially when data are not necessarily normally distributed.
+# In our context, a Student t_test would be more appropriate because every assumption is fulfilled. If it wasn't, then a non parametric
+# test such as this one would be more appropriate.
+
     # 4.4) For the 85+ age group, perform a Wilcoxon test to compare mortality between 2022 and 2025 **in summer**.
     # What do you conclude?
 
+wilcoxon_85 = wilcoxon(sub22_summer_over_85["MS_NUM_DEATH"], sub25_summer_over_85["MS_NUM_DEATH"])
+print(wilcoxon_85.pvalue)
+# The p_value (0.0017383269781142687) is lower than the chosen alpha (0.05). Thus, we reject H0 because there is a significant difference
+# between the two medians of both the samples.
+
     # 4.5) Perform the Wilcoxon test but now for the 25–44 age group and the **summer**.
     # What do you conclude in this case?
+
+sub22_summer_25_44 = sub22[(sub22["CD_AGEGROUP"] == "25-44") & (sub22["season"] == "summer")]
+sub25_summer_25_44 = sub25[(sub25["CD_AGEGROUP"] == "25-44") & (sub25["season"] == "summer")]
+
+wilcoxon_25_44 = wilcoxon(sub22_summer_25_44["MS_NUM_DEATH"], sub25_summer_25_44["MS_NUM_DEATH"])
+print(wilcoxon_25_44.pvalue)
+# The p_value (0.6369234788432132) is *higher* than the chosen alpha (0.05). Thus, we accept H0 because there is no significant difference
+# between the two medians of both the samples.
