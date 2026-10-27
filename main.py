@@ -20,12 +20,16 @@ counts = df["CD_AGEGROUP"].value_counts().reindex(ordre)
 sub22 = df[("2022-12-31" >= df["date"]) & (df["date"] >= "2022-01-01")]
 sub25 = df[("2025-12-31" >= df["date"]) & (df["date"] >= "2025-01-01")]
 
+print(f"\033[1;34m 2022 subset is \033[0;0m \n{sub22},\n\n \033[1;34m2025 subset is\033[0;0m \n{sub25}")
+
     # 4.2) For the 85+ age group, perform a Student’s t-test to compare mortality between 2022 and 2025 **in summer**.
     # Check whether the assumptions required to apply this test are satisfied.
 
 # Filter over age 85 and summer
 sub22_summer_over_85 = sub22[(sub22["CD_AGEGROUP"] == "85+") & (sub22["season"] == "summer")]
 sub25_summer_over_85 = sub25[(sub25["CD_AGEGROUP"] == "85+") & (sub25["season"] == "summer")]
+
+print(f"\033[1;34m2022 subset filtered by age > 85+ during summer is\033[0;0m \n{sub22_summer_over_85},\n\n \033[1;34m2025 subset filtered by age > 85+ during summer is\033[0;0m \n{sub25_summer_over_85}")
 
 # Find t-value = signal/noise = abs(mean(sub22...) - mean(sub25...))/sqrt(V[sub22...]/n1 + V[sub25...]/n2)
 # (if unclear, go seek medical attention immediately)
@@ -45,7 +49,9 @@ alpha = 0.05 # Error margin
 dof = n1 + n2 - 2 # Degree of liberty
 t_compare = t.isf(alpha, dof)
 
-print(f"t_value is {t_value}, student table is {t_compare}. t_value > t_compare, we REJECT the hypothesis H0")
+print("""The t_value for the two subsets above is {0:0.5f}.
+The value of the student table with alpha = 0.05 and degree of liberty 94 + 94 - 2 = 186 is {1:0.5f}.
+We can see that t_value > t_compare, we REJECT the hypothesis H0""".format(t_value, t_compare))
 # Differences between the data are NOT due to chance, there exists a factor influencing the mortality rate of the 85+ range of people
 # between the summers of the years 2022 and 2025
 
@@ -69,7 +75,7 @@ print(f"t_value is {t_value}, student table is {t_compare}. t_value > t_compare,
     # What do you conclude?
 
 wilcoxon_85 = wilcoxon(sub22_summer_over_85["MS_NUM_DEATH"], sub25_summer_over_85["MS_NUM_DEATH"])
-print(wilcoxon_85.pvalue)
+print(f"The p_value of the Wilcoxon test for the two subsets of question 4.2 is {wilcoxon_85.pvalue}")
 # The p_value (0.0017383269781142687) is lower than the chosen alpha (0.05). Thus, we reject H0 because there is a significant difference
 # between the two medians of both the samples.
 
@@ -80,6 +86,10 @@ sub22_summer_25_44 = sub22[(sub22["CD_AGEGROUP"] == "25-44") & (sub22["season"] 
 sub25_summer_25_44 = sub25[(sub25["CD_AGEGROUP"] == "25-44") & (sub25["season"] == "summer")]
 
 wilcoxon_25_44 = wilcoxon(sub22_summer_25_44["MS_NUM_DEATH"], sub25_summer_25_44["MS_NUM_DEATH"])
-print(wilcoxon_25_44.pvalue)
+print(f"""wilcoxon_25_44.pvalue""")
+print(f"""2022 subset filtered by age between 25 and 44 during summer is \n{sub22_summer_25_44},
+        \n 2025 subset filtered by age between 25 and 44 during summer is \n{sub25_summer_25_44}.
+        
+        The p_value of the Wilcoxon test for the two subsets is {wilcoxon_25_44.pvalue}""")
 # The p_value (0.6369234788432132) is *higher* than the chosen alpha (0.05). Thus, we accept H0 because there is no significant difference
 # between the two medians of both the samples.
