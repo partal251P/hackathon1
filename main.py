@@ -6,7 +6,6 @@ from scipy.stats import poisson, nbinom
 import statsmodels.api as sm 
 import statsmodels.formula.api as smf 
 
-df = pd.read_csv("mortality_climate.csv")
 
 # Load DataSet 
 mortality_df = pd.read_csv("mortality_climate.csv")
@@ -16,8 +15,8 @@ mortality_df['season'] = mortality_df['season'].astype('category')
 mortality_df['CD_AGEGROUP'] = mortality_df['CD_AGEGROUP'].astype('category')
 
 # age order 
-ordre_ages = ['0-24', '25-44', '45-64', '65-74', '75-84', '85+']
-mortality_df['CD_AGEGROUP'] = pd.Categorical(mortality_df['CD_AGEGROUP'], categories=ordre_ages, ordered=True)
+age_order = ['0-24', '25-44', '45-64', '65-74', '75-84', '85+']
+mortality_df['CD_AGEGROUP'] = pd.Categorical(mortality_df['CD_AGEGROUP'], categories=age_order, ordered=True)
 
 # Summary 
 mortality_df.info()
